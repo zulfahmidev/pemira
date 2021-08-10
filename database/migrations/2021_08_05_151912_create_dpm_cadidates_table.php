@@ -16,8 +16,8 @@ class CreateDpmCadidatesTable extends Migration
         Schema::create('dpm_cadidates', function (Blueprint $table) {
             $table->id();
             $table->integer('nomor_urut');
-            $table->string('nama_ketua');
-            $table->string('foto_ketua');
+            $table->string('nama');
+            $table->string('foto');
             $table->string('description');
             $table->timestamps();
         });

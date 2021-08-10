@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Admin as User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +11,7 @@ class AdminAuthController extends Controller
 {
     public function register(Request $request) {
         $val = Validator::make($request->all(), [
-            "name" => "required|unique:users,name",
+            "name" => "required|unique:admins,name",
             "password" => "required",
         ]);
         if ($val->fails()) {

@@ -1,18 +1,24 @@
 <?php
 
+use App\Http\Controllers\CBEMController;
+use App\Http\Controllers\CDPMController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\VoterController;
+use App\Models\Setting;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+Auth::routes();
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PageController::class, 'home'])->name('home')->middleware('votedirection');
+
+Route::get('/home', [PageController::class, 'home'])->name('home')->middleware('votedirection');
+
+Route::get('/vote/dpm', [PageController::class, 'voteDpm'])->name('votedpm')->middleware(['auth', 'votedirection']);
+Route::get('/vote/bem', [PageController::class, 'voteBem'])->name('votebem')->middleware(['auth', 'votedirection']);
+
+Route::post('/logout', [VoterController::class, 'logout'])->name('logout')->middleware(['auth']);
+
+Route::post('/vote/dpm/{nomor_urut}', [VoterController::class, 'voteDpm'])->middleware(['auth']);
+Route::post('/vote/bem/{nomor_urut}', [VoterController::class, 'voteBem'])->middleware(['auth']);

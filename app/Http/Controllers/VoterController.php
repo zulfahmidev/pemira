@@ -6,7 +6,7 @@ use App\Mail\MailPassword;
 use App\Models\BEMCandidate;
 use App\Models\DPMCandidate;
 use App\Models\Setting;
-use App\Models\Voter;
+use App\Models\User as Voter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -88,125 +88,54 @@ class VoterController extends Controller
     public function voteBem(Request $request, $nomor_urut) {
         $candidate = BEMCandidate::where('nomor_urut', $nomor_urut)->first();
         if ($candidate) {
-            $voter = $request->attributes->get('voter');
+            $voter = Voter::find(Auth::user()->id);
             if ($voter) {
                 if (is_null($voter->cbem_id)) {
                     $voter->cbem_id = $candidate->id;
                     $voter->save();
-                    return response()->json([
-                        "message" => "Anda berhasil memilih",
-                        "body" => null,
-                    ]);
+                    return redirect()->route('home');
                 }
-                return response()->json([
+                return redirect()->route('votedpm')->with("response", [
                     "message" => "Anda sudah melakukan pencoblosan ini",
-                    "body" => null,
-                ], 403);
+                ]);
             }
-            return response()->json([
+            return redirect()->route('votedpm')->with("response", [
                 "message" => "Anda tidak memiliki hak memilih",
-                "body" => null,
-            ], 404);
+            ]);
         }
-        return response()->json([
+        return redirect()->route('votedpm')->with("response", [
             "message" => "Kandidat tidak ditemukan",
-            "body" => null,
-        ], 404);
+        ]);
     }
     
     public function voteDpm(Request $request, $nomor_urut) {
         $candidate = DPMCandidate::where('nomor_urut', $nomor_urut)->first();
         if ($candidate) {
-            $voter = $request->attributes->get('voter');
+            $voter = Voter::find(Auth::user()->id);
             if ($voter) {
                 if (is_null($voter->cdpm_id)) {
                     $voter->cdpm_id = $candidate->id;
                     $voter->save();
-                    return response()->json([
-                        "message" => "Anda berhasil memilih",
-                        "body" => null,
-                    ]);
+                    return redirect()->route('votebem');
                 }
-                return response()->json([
+                return redirect()->route('votedpm')->with("response", [
                     "message" => "Anda sudah melakukan pencoblosan ini",
-                    "body" => null,
-                ], 403);
+                ]);
             }
-            return response()->json([
+            return redirect()->route('votedpm')->with("response", [
                 "message" => "Anda tidak memiliki hak memilih",
-                "body" => null,
-            ], 404);
+            ]);
         }
-        return response()->json([
+        return redirect()->route('votedpm')->with("response", [
             "message" => "Kandidat tidak ditemukan",
-            "body" => null,
-        ], 404);
-    }
-
-    public function login(Request $request) {
-        $val = Validator::make($request->all(), [
-            "nim" => "required",
-            "password" => "required",
         ]);
-        if ($val->fails()) {
-            return response()->json([
-                "message" => "Invalid field",
-                "body" => $val->errors(),
-            ], 403);
-        }
-
-        $voter = Voter::where('nim', $request->nim)->first();
-        if (password_verify($request->password, $voter->password)) {
-            $setting = Setting::where('key', 'start_voting')->first();
-            if (time() > (int) $setting->value) {
-                if (is_null($voter->login_token)) {
-                    $phase = 0;
-                    if (!is_null($voter->cdpm_id)) $phase = 1;
-                    else if (!is_null($voter->cbem_id)) $phase = 2;
-                    
-                    if ($phase < 2) {
-                        $token = hash('md5', time().$voter->nim);
-                        $voter->login_token = $token;
-                        $voter->save();
-
-                        return response()->json([
-                            "message" => "Login berhasil",
-                            "body" => [
-                                "nim" => $voter->nim,
-                                "token" => $token,
-                                "expired_at" => time() + (60*10), // 10 menit
-                                "phase" => $phase,
-                            ]
-                        ]);
-                    }
-                    return response()->json([
-                        "message" => "Anda telah melakukan semua pencoblosan.",
-                        "body" => null
-                    ], 403);
-                }
-                return response()->json([
-                    "message" => "Akun anda sedang aktif.",
-                    "body" => null
-                ], 403);
-            }
-            return response()->json([
-                "message" => "Untuk saat ini login ditutup.",
-                "body" => null
-            ], 403);
-        }
-        return response()->json([
-            "message" => "Maaf anda belum mempunyai hak pilih.",
-            "body" => null
-        ], 401);
     }
-
+    
     public function logout(Request $request) {
-        $voter = $request->attributes->get('voter');
-        $voter->login_token = null;
+        $voter = Voter::find(Auth::user()->id);
+        $voter->login_at = null;
         $voter->save();
-        return response()->json([
-            "message" => "Berhasil logout.",
-            "body" => null
-        ]);
+        Auth::logout();
+        return redirect()->route('home');
     }
 }

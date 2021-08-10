@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BEMCandidate;
 use App\Models\DPMCandidate;
-use App\Models\Voter;
+use App\Models\User as Voter;
 use Illuminate\Http\Request;
 
 class QuickCountController extends Controller
@@ -38,11 +38,11 @@ class QuickCountController extends Controller
 
         $data = [
             "dpm" => [
-                "candidates" => $dpmCadidates,
+                "cadidates" => $dpmCadidates,
                 "hasVotes" => $dpmHasVote,
             ],
             "bem" => [
-                "candidates" => $bemCadidates,
+                "cadidates" => $bemCadidates,
                 "hasVotes" => $bemHasVote,
             ],
             "voters" => count($voters),

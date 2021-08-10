@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Validator;
 class CBEMController extends Controller
 {
     public function index() {
-        $candidates = BEMCandidate::all()->toArray();
+        $cadidates = BEMCandidate::all()->toArray();
         return response()->json([
-            "message" => "Daftar Calon BEM",
-            "body" => $candidates,
+            "message" => "Daftar kandidat BEM",
+            "body" => $cadidates,
         ]);
     }
 
@@ -34,18 +34,14 @@ class CBEMController extends Controller
     public function store(Request $request) {
         $val = Validator::make($request->all(), [
             "nomor_urut" => "required|unique:bem_cadidates,nomor_urut",
-            "nama_ketua" => "required",
-            "nama_wakil" => "required",
-            "foto_ketua" => "required|image",
-            "foto_wakil" => "required|image",
+            "nama" => "required",
+            "foto" => "required|image",
             "description" => "required",
         ], [
             "nomor_urut.required" => "Kolom nomor_urut harus di isi.",
             "nomor_urut.unique" => "Nomor urut ini sudah terpakai.",
-            "nama_ketua.required" => "Kolom nama_ketua harus di isi.",
-            "nama_wakil.required" => "Kolom nama_wakil harus di isi.",
-            "foto_ketua.required" => "Kolom foto_ketua harus di isi.",
-            "foto_wakil.required" => "Kolom foto_wakil harus di isi.",
+            "nama.required" => "Kolom nama harus di isi.",
+            "foto.required" => "Kolom foto harus di isi.",
             "description.required" => "Kolom deskripsi harus di isi.",
         ]);
 
@@ -56,25 +52,17 @@ class CBEMController extends Controller
             ], 403);
         }
 
-        if (!($foto_ketua = $this->uploadImage($request, "foto_ketua", 'uploads/bem/foto_ketua/'))) {
+        if (!($foto = $this->uploadImage($request, "foto", 'uploads/bem/foto/'))) {
             return response()->json([
-                "message" => "Invalid field, foto_ketua not found!",
-                "body" => null,
-            ]);
-        }
-        if (!($foto_wakil = $this->uploadImage($request, "foto_wakil", 'uploads/bem/foto_wakil/'))) {
-            return response()->json([
-                "message" => "Invalid field, image not found!",
+                "message" => "Invalid field, foto not found!",
                 "body" => null,
             ]);
         }
 
         $cadidate = new BEMCandidate();
         $cadidate->nomor_urut = $request->nomor_urut;
-        $cadidate->nama_ketua = $request->nama_ketua;
-        $cadidate->nama_wakil = $request->nama_wakil;
-        $cadidate->foto_ketua = $foto_ketua;
-        $cadidate->foto_wakil = $foto_wakil;
+        $cadidate->nama = $request->nama;
+        $cadidate->foto = $foto;
         $cadidate->description = $request->description;
         $cadidate->save();
         
@@ -95,18 +83,14 @@ class CBEMController extends Controller
     public function update(Request $request, $nomor_urut) {
         $val = Validator::make($request->all(), [
             // "nomor_urut" => "required|unique:bem_cadidates,nomor_urut",
-            "nama_ketua" => "required",
-            "nama_wakil" => "required",
-            // "foto_ketua" => "required|image",
-            // "foto_wakil" => "required|image",
+            "nama" => "required",
+            // "foto" => "required|image",
             "description" => "required",
         ], [
             // "nomor_urut.required" => "Kolom nomor_urut harus di isi.",
             "nomor_urut.unique" => "Nomor urut ini sudah terpakai.",
-            "nama_ketua.required" => "Kolom nama_ketua harus di isi.",
-            "nama_wakil.required" => "Kolom nama_wakil harus di isi.",
-            "foto_ketua.required" => "Kolom foto_ketua harus di isi.",
-            "foto_wakil.required" => "Kolom foto_wakil harus di isi.",
+            "nama.required" => "Kolom nama harus di isi.",
+            "foto.required" => "Kolom foto harus di isi.",
             "description.required" => "Kolom deskripsi harus di isi.",
         ]);
 
@@ -120,29 +104,18 @@ class CBEMController extends Controller
         $cadidate = BEMCandidate::where('nomor_urut', $nomor_urut)->first();
         if ($cadidate) {
 
-            if (($file = $request->file('foto_ketua'))) {
+            if (($file = $request->file('foto'))) {
                 $filename = time() . "." . $file->getClientOriginalExtension();
-                if (File::exists('uploads/bem/foto_ketua/'.$cadidate->foto_ketua)) {
-                    unlink('uploads/bem/foto_ketua/'.$cadidate->foto_ketua);
+                if (File::exists('uploads/bem/foto/'.$cadidate->foto)) {
+                    unlink('uploads/bem/foto/'.$cadidate->foto);
                 }
-                $file->move('uploads/bem/foto_ketua/', $filename);
-                $cadidate->foto_ketua = $filename;
-            }
-            
-            if (($file = $request->file('foto_wakil'))) {
-                $filename = time() . "." . $file->getClientOriginalExtension();
-                if (File::exists('uploads/bem/foto_wakil/'.$cadidate->foto_wakil)) {
-                    unlink('uploads/bem/foto_wakil/'.$cadidate->foto_wakil);
-                }
-                $file->move('uploads/bem/foto_wakil/', $filename);
-                $cadidate->foto_wakil = $filename;
+                $file->move('uploads/bem/foto/', $filename);
+                $cadidate->foto = $filename;
             }
 
             // $cadidate->nomor_urut = $request->nomor_urut;
-            $cadidate->nama_ketua = $request->nama_ketua;
-            $cadidate->nama_wakil = $request->nama_wakil;
-            // $cadidate->foto_ketua = $request->foto_ketua;
-            // $cadidate->foto_wakil = $request->foto_wakil;
+            $cadidate->nama = $request->nama;
+            // $cadidate->foto = $request->foto;
             $cadidate->description = $request->description;
             $cadidate->save();
             return response()->json([
@@ -159,11 +132,8 @@ class CBEMController extends Controller
     public function destroy($nomor_urut) {
         $cadidate = BEMCandidate::where('nomor_urut', $nomor_urut)->first();
         if ($cadidate) {
-            if (File::exists('uploads/bem/foto_ketua/'.$cadidate->foto_ketua)) {
-                unlink('uploads/bem/foto_ketua/'.$cadidate->foto_ketua);
-            }
-            if (File::exists('uploads/bem/foto_wakil/'.$cadidate->foto_wakil)) {
-                unlink('uploads/bem/foto_wakil/'.$cadidate->foto_wakil);
+            if (File::exists('uploads/bem/foto/'.$cadidate->foto)) {
+                unlink('uploads/bem/foto/'.$cadidate->foto);
             }
             $new = $cadidate;
             $cadidate->delete();

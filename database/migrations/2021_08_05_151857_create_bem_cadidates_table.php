@@ -16,10 +16,8 @@ class CreateBemCadidatesTable extends Migration
         Schema::create('bem_cadidates', function (Blueprint $table) {
             $table->id();
             $table->integer('nomor_urut')->unique();
-            $table->string('nama_ketua');
-            $table->string('nama_wakil');
-            $table->string('foto_ketua');
-            $table->string('foto_wakil');
+            $table->string('nama');
+            $table->string('foto');
             $table->text('description');
             $table->timestamps();
         });

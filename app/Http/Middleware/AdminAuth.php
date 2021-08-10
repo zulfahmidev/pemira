@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
+use App\Models\Admin;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -18,7 +18,7 @@ class AdminAuth
     public function handle(Request $request, Closure $next)
     {
         if ($request->token) {
-            $user = User::where('login_token', $request->token)->first();
+            $user = Admin::where('login_token', $request->token)->first();
             if ($user) {
                 $request->attributes->set('user', $user);
                 return $next($request);
