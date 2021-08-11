@@ -17,18 +17,31 @@ class VoterController extends Controller
 {
     public function import(Request $request) {
         $val = Validator::make($request->all(), [
-            "voters" => "required|json"
+            "voters" => "required|mimes:json"
         ],[
             "voters.required" => "Kolom voters wajib di isi.",
             "voters.json" => "Konten yang anda masukkan bukan json.",
         ]);
+
         if ($val->fails()) {
             return response()->json([
                 "message" => "Invalid field",
                 "body" => $val->errors(),
             ], 403);
         }
-        $voters = json_decode($request->voters, true);
+        $voters = [];
+        $file = $request->file('voters');
+        if ($file) {
+            $ext = $file->getClientOriginalExtension();
+            if (strtolower($ext) == 'json') {
+                $voters = json_decode(file_get_contents($file->getPathname()), true);
+            }else {
+                return response()->json([
+                    "message" => "File is invalid!",
+                    "body" => null,
+                ], 403);
+            }
+        }
         $rows = [];
 
         foreach ($voters as $v) {

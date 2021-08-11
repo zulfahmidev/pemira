@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route::prefix('admin')->group(function() {
 
-    Route::prefix('candidate')->group(function() {
+    Route::prefix('cadidate')->group(function() {
 
         // BEM
         Route::get('bem', [CBEMController::class, 'index']);
@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Route;
     Route::prefix('setting')->group(function() {
 
         Route::post('/init', [SettingController::class, 'init'])->middleware(['adminauth']);
-        // Route::post('/', [SettingController::class, 'set']);
+        Route::post('/', [SettingController::class, 'set'])->middleware(['adminauth']);
         Route::get('/{key}', [SettingController::class, 'get']);
     });
 

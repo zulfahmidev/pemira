@@ -72,7 +72,7 @@
     </div>
     <div class="container text-center py-5">
         <h2>QUICK COUNT DPM</h2>
-        <p class="text-black-50">Hasil perhitangan suara secara realtime dari pemilihan Ketua DPM.</p>
+        <p class="text-black-50">Hasil perhitungan suara secara realtime dari pemilihan Ketua DPM.</p>
         <div class="row">
             <div class="col-lg-6 m-auto">
                 <canvas id="hasilSuaraDpm"></canvas>
@@ -99,7 +99,7 @@
     </div>
     <div class="container text-center py-5">
         <h2>QUICK COUNT BEM</h2>
-        <p class="text-black-50">Hasil perhitangan suara secara realtime dari pemilihan Ketua dan WAKIL BEM.</p>
+        <p class="text-black-50">Hasil perhitungan suara secara realtime dari pemilihan Ketua dan WAKIL BEM.</p>
         <div class="row">
             <div class="col-lg-6 m-auto">
                 <canvas id="hasilSuaraBem"></canvas>
@@ -125,21 +125,23 @@
         </div>
     </div>
 
-    <div id="howVote" class="container text-center py-5">
-        <h2>CARA VOTING</h2>
-        <p class="text-black-50">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
-        <div class="row">
-            <div class="col-lg-6 m-auto">
-
-                <div class="ratio ratio-16x9">
-                    <iframe src="https://www.youtube.com/embed/KO4xEQ3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <div id="howVote" class="bg-light">
+        <div class="container text-center py-5">
+            <h2>CARA VOTING</h2>
+            <p class="text-black-50">Berikut video singkat tentang cara melakukan voting.</p>
+            <div class="row">
+                <div class="col-lg-6 m-auto">
+    
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/KO4xEQ3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="py-4 bg-light text-center">
-        <div class="small text-black" style="font-size: 12px;">Copyright &copy;2021, Komisi Indepen Pemilihan Politeknik Negeri Lhokseumawe.</div>
+    <div class="py-4 bg-dark text-center">
+        <div class="small text-light" style="font-size: 12px;">Copyright &copy;2021, Komisi Indepen Pemilihan Politeknik Negeri Lhokseumawe.</div>
     </div>
     
     <!-- Modals -->
@@ -172,17 +174,20 @@
         let start = {{ $start }};
         let end = {{ $end }};
         setInterval(() => {
+            
             let date = new Date();
             let now = (Math.floor(date.getTime() / 1000) - 1);
-            // let time = (start > now ? start : end) - now;
-            if (start > now) {
-                time = start - now;
-                document.querySelector('#descTime').innerHTML = 'SISA WAKTU UNTUK MULAI VOTING';
-            }else {
-                time = end - now;
-                document.querySelector('#descTime').innerHTML = 'SISA WAKTU UNTUK MELAKUKAN VOTING';
+            // console.log(start);
+            if (now <= end) {
+                if (start > now) {
+                    time = start - now;
+                    document.querySelector('#descTime').innerHTML = 'SISA WAKTU UNTUK MULAI VOTING';
+                }else {
+                    time = end - now;
+                    document.querySelector('#descTime').innerHTML = 'SISA WAKTU UNTUK MELAKUKAN VOTING';
+                }
+                updateTime(time);
             }
-            updateTime(time);
         }, 20);
     </script>
 </body>

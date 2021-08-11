@@ -38,11 +38,12 @@ class CDPMController extends Controller
             "foto" => "required|image",
             "description" => "required",
         ], [
-            "nomor_urut.required" => "Kolom nomor_urut harus di isi.",
+            "nomor_urut.required" => "Kolom nomor urut harus di isi.",
             "nomor_urut.unique" => "Nomor urut ini sudah terpakai.",
             "nama.required" => "Kolom nama harus di isi.",
             "foto.required" => "Kolom foto harus di isi.",
             "description.required" => "Kolom deskripsi harus di isi.",
+            "foto.image" => "File yang anda masukkan tidak berupa gambar.",
         ]);
 
         if ($val->fails()) {
@@ -87,11 +88,12 @@ class CDPMController extends Controller
             // "foto" => "required|image",
             "description" => "required",
         ], [
-            // "nomor_urut.required" => "Kolom nomor_urut harus di isi.",
+            "nomor_urut.required" => "Kolom nomor urut harus di isi.",
             "nomor_urut.unique" => "Nomor urut ini sudah terpakai.",
             "nama.required" => "Kolom nama harus di isi.",
             "foto.required" => "Kolom foto harus di isi.",
             "description.required" => "Kolom deskripsi harus di isi.",
+            "foto.image" => "File yang anda masukkan tidak berupa gambar.",
         ]);
 
         if ($val->fails()) {

@@ -26,8 +26,8 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            $table->foreign('cdpm_id')->references('id')->on('dpm_cadidates')->restrictOnDelete();
-            $table->foreign('cbem_id')->references('id')->on('bem_cadidates')->restrictOnDelete();
+            $table->foreign('cdpm_id')->references('id')->on('dpm_cadidates')->nullOnDelete();
+            $table->foreign('cbem_id')->references('id')->on('bem_cadidates')->nullOnDelete();
         });
     }
 

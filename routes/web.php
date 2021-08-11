@@ -22,3 +22,7 @@ Route::post('/logout', [VoterController::class, 'logout'])->name('logout')->midd
 
 Route::post('/vote/dpm/{nomor_urut}', [VoterController::class, 'voteDpm'])->middleware(['auth']);
 Route::post('/vote/bem/{nomor_urut}', [VoterController::class, 'voteBem'])->middleware(['auth']);
+
+Route::view('/manager', 'admin'); # Ini Route Vue!!!
+Route::view('/manager/login', 'loginAdmin'); # Ini Route Vue!!!
+Route::view('/manager/{app}', 'admin')->where('app', '.*'); # Ini Route Vue!!!

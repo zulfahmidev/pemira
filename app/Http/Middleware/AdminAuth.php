@@ -17,6 +17,7 @@ class AdminAuth
      */
     public function handle(Request $request, Closure $next)
     {
+        // return response()->json($request->all());
         if ($request->token) {
             $user = Admin::where('login_token', $request->token)->first();
             if ($user) {

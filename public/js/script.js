@@ -82,7 +82,6 @@ function updateChart() {
             });
         });
 
-        console.log(data);
         setValue('.total_voters', data.voters);
         setValue('.hasVotesDPM', data.dpm.hasVotes);
         setValue('.hasVotesBEM', data.bem.hasVotes);
